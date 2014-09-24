@@ -100,7 +100,7 @@ class Form
 	public function __toString() {
 		static $id = 0;
 
-		$action = new \Rapid\URL($this->action);
+		$action = new \Rapid\Rapid\URL($this->action);
 		$str = '<form action="' . $action . '" method="POST" role="form">';
 
 		foreach ($this->fields as $k => $v) {

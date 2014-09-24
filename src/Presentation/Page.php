@@ -120,7 +120,7 @@ class Page
 	 * Adds a Javascript to the page.
 	 */
 	public function require_js($path) {
-		$url = new \URL($path);
+		$url = new \Rapid\URL($path);
 		$this->scripts[] = $url->out();
 	}
 
@@ -128,7 +128,7 @@ class Page
 	 * Adds a Stylesheet to the page.
 	 */
 	public function require_css($path) {
-		$url = new \URL($path);
+		$url = new \Rapid\URL($path);
 		$this->stylesheets[] = $url->out();
 	}
 
@@ -165,7 +165,7 @@ class Page
 	 */
 	public function redirect($url) {
 		if (!is_object($url)) {
-			$url = new \URL($url);
+			$url = new \Rapid\URL($url);
 		}
 
 		header('Location: ' . $url);

@@ -117,7 +117,7 @@ HTML5;
 				$li .= ' class="active"';
 			}
 
-			$obj = new \URL($url);
+			$obj = new \Rapid\URL($url);
 			$result .= $li . '><a href="' . $obj . '">' . $name . '</a></li>';
 		}
 

@@ -1,4 +1,4 @@
-Rapid
+Rapid Framework
 =====
 
 Rapid PHP Prototyping Framework

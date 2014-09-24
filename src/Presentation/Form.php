@@ -28,7 +28,6 @@ class Form
 	 */
 	public function import_model($model) {
 		if (!is_object($model)) {
-			$model = '\\Models\\' . $model;
 			$model = new $model();
 		}
 
@@ -51,23 +50,23 @@ class Form
 		$formtype = 'text';
 
 		switch ($type) {
-			case \Data\Model::TYPE_INT:
+			case \Rapid\Data\Model::TYPE_INT:
 				$formtype = 'number';
 				break;
 
-			case \Data\Model::TYPE_STRING:
+			case \Rapid\Data\Model::TYPE_STRING:
 				$formtype = 'text';
 				break;
 
-			case \Data\Model::TYPE_BOOL:
+			case \Rapid\Data\Model::TYPE_BOOL:
 				$formtype = 'checkbox';
 				break;
 
-			case \Data\Model::TYPE_DECIMAL:
+			case \Rapid\Data\Model::TYPE_DECIMAL:
 				$formtype = 'number';
 				break;
 
-			case \Data\Model::TYPE_TIMESTAMP:
+			case \Rapid\Data\Model::TYPE_TIMESTAMP:
 				$formtype = 'datetime';
 				break;
 
@@ -101,7 +100,7 @@ class Form
 	public function __toString() {
 		static $id = 0;
 
-		$action = new \URL($this->action);
+		$action = new \Rapid\URL($this->action);
 		$str = '<form action="' . $action . '" method="POST" role="form">';
 
 		foreach ($this->fields as $k => $v) {

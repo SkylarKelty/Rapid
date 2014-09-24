@@ -108,7 +108,6 @@ class PDO extends \PDO
 	 * Get records from DB and convert them to models.
 	 */
 	public function get_models($model, $params = array()) {
-		$model = '\\Models\\' . $model;
 		$obj = new $model();
 		$table = $obj->get_table();
 

@@ -5,7 +5,7 @@
  * @author Skylar Kelty <skylarkelty@gmail.com>
  */
 
-namespace Data;
+namespace Rapid\Data;
 
 /**
  * Basic model class within Database layer.

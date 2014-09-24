@@ -5,7 +5,7 @@
  * @author Skylar Kelty <skylarkelty@gmail.com>
  */
 
-namespace Auth;
+namespace Rapid\Auth;
 
 class User
 {

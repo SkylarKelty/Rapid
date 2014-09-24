@@ -5,7 +5,7 @@
  * @author Skylar Kelty <skylarkelty@gmail.com>
  */
 
-namespace Models;
+namespace Rapid\Models;
 
 class Example extends \Data\DBModel
 {

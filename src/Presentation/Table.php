@@ -5,7 +5,7 @@
  * @author Skylar Kelty <skylarkelty@gmail.com>
  */
 
-namespace Presentation;
+namespace Rapid\Presentation;
 
 /**
  * Basic table methods class.

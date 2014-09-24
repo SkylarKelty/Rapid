@@ -5,6 +5,8 @@
  * @author Skylar Kelty <skylarkelty@gmail.com>
  */
 
+namespace Rapid;
+
 /**
  * URL Class.
  */

@@ -51,7 +51,7 @@ class PDO extends \PDO
 		$stmt = $this->prepare($sql);
 
 		foreach ($params as $k => $v) {
-			$stmt->bindParam(":$k", $v);
+			$stmt->bindValue(":$k", $v);
 		}
 
 		$stmt->execute();

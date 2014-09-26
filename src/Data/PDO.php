@@ -58,7 +58,7 @@ class PDO extends \PDO
 
 		$results = array();
 		while (($obj = $stmt->fetchObject()) !== false) {
-            if (!isset($obj->id)) {
+            if (isset($obj->id)) {
     			$results[$obj->id] = $obj;
             } else {
                 $results[] = $obj;

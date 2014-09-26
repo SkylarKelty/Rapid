@@ -159,7 +159,7 @@ class PDO extends \PDO
 
             $sql[] = "`{$k}` = :{$k}";
         }
-        $sql = join(' AND ', $sql);
+        $sql = join(', ', $sql);
 
         $stmt = $this->prepare("UPDATE {$table} SET {$sql} WHERE `id`=:id");
         foreach ($values as $k => $v) {

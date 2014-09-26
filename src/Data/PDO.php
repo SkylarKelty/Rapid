@@ -140,4 +140,29 @@ class PDO extends \PDO
 
 		return array_pop($results);
 	}
+
+    /**
+     * Delete a record.
+     */
+    public function delete_record($table, $values) {
+        $table = $this->get_table($table);
+
+        $sql = array();
+        foreach ($values as $k => $v) {
+            $sql[] = "`{$k}` = :{$k}";
+        }
+        $sql = join(' AND ', $sql);
+
+        $stmt = $this->prepare("DELETE FROM {$table} WHERE {$sql}");
+        foreach ($values as $k => $v) {
+            $stmt->bindValue(":{$k}", $v);
+        }
+
+        if ($stmt->execute() === false) {
+            print_r($this->errorInfo());
+            return false;
+        }
+
+        return true;
+    }
 }

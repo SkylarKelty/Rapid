@@ -16,6 +16,21 @@ class Table
 	private $rows;
 
 	/**
+	 * Constructor.
+	 */
+	public function __construct($headings = array()) {
+		$this->rows = array();
+		$this->headings = $headings;
+	}
+
+	/**
+	 * Add a row.
+	 */
+	public function add_row($row) {
+		$this->rows[] = $row;
+	}
+
+	/**
 	 * Import a bunch of data.
 	 */
 	public function set_data($rows) {
@@ -31,7 +46,7 @@ class Table
 				$this->headings = array_keys($row);
 			}
 
-			$this->rows[] = $row;
+			$this->add_row($row);
 		}
 	}
 

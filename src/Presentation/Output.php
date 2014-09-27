@@ -12,11 +12,22 @@ namespace Rapid\Presentation;
  */
 class Output
 {
+	private $outputstarted;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->outputstarted = false;
+	}
+
 	/**
 	 * Prints a generic header.
 	 */
 	public function header() {
 		global $PAGE;
+
+		$this->outputstarted = true;
 
 		$stylesheets = $PAGE->get_stylesheets();
 
@@ -53,6 +64,7 @@ HTML5;
 		global $CFG, $PAGE;
 
 		$elements = $PAGE->get_navbar();
+
 		$menu = $this->navigation_menu($elements);
 		$title = $CFG->brand;
 
@@ -147,5 +159,28 @@ HTML5;
 			  </body>
 			</html>
 HTML5;
+	}
+
+	/**
+	 * Print an error page.
+	 */
+	public function error_page($message) {
+		global $PAGE;
+
+		$structure = !$this->outputstarted;
+
+		if ($structure) {
+			$this->header();
+			$this->heading('Oops!');
+		}
+
+		echo '<p>An error was encountered during execution.<br />The details are below...</p>';
+		echo $message;
+
+		if ($structure) {
+			$this->footer();
+		}
+
+		die;
 	}
 }

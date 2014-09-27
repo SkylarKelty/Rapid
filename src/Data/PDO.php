@@ -150,6 +150,30 @@ class PDO extends \PDO
 	}
 
     /**
+     * Insert a record.
+     */
+    public function insert_record($table, $values) {
+        $table = $this->get_table($table);
+
+        $sqlkeys = join(', ', array_keys($values));
+
+        $sqlvalues = array();
+        foreach ($values as $k => $v) {
+            $sqlvalues[] = ":{$k}";
+        }
+        $sqlvalues = join(', ', $sqlvalues);
+
+        $stmt = $this->prepare("INSERT INTO {$table} ({$sqlkeys}) VALUES ({$sqlvalues})");
+        foreach ($values as $k => $v) {
+            $stmt->bindValue(":{$k}", $v);
+        }
+
+        $stmt->execute();
+
+        return $this->lastInsertId();
+    }
+
+    /**
      * Update a record.
      */
     public function update_record($table, $values) {

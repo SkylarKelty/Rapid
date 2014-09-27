@@ -9,226 +9,122 @@ namespace Rapid\Data;
 
 class PDO extends \PDO
 {
-	/**
-	 * Table prefix.
-	 */
-	private $prefix;
+    /**
+     * Table prefix.
+     */
+    private $prefix;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct($engine, $hostname, $port, $dbname, $username, $password, $prefix) {
-		parent::__construct("$engine:host=$hostname;port=$port;dbname=$dbname", $username, $password);
-		$this->prefix = $prefix;
-	}
+    /**
+     * Constructor
+     */
+    public function __construct($engine, $hostname, $port, $dbname, $username, $password, $prefix) {
+        parent::__construct("$engine:host=$hostname;port=$port;dbname=$dbname", $username, $password);
+        $this->prefix = $prefix;
+    }
 
-	/**
-	 * Get table name.
-	 */
-	private function get_table($name) {
-		return $this->prefix . $name;
-	}
+    /**
+     * Get table name.
+     */
+    private function get_table($name) {
+        return $this->prefix . $name;
+    }
 
-	/**
-	 * Replace curley brace table names with real table names.
-	 */
-	private function substitute_tables($sql) {
-		if (preg_match_all('/\{(.*?)\}/', $sql, $matches) > 0) {
-			foreach ($matches[1] as $match) {
-				$table = $this->get_table($match);
-				$sql = str_replace("{{$match}}", $table, $sql);
-			}
-		}
+    /**
+     * Replace curley brace table names with real table names.
+     */
+    private function substitute_tables($sql) {
+        if (preg_match_all('/\{(.*?)\}/', $sql, $matches) > 0) {
+            foreach ($matches[1] as $match) {
+                $table = $this->get_table($match);
+                $sql = str_replace("{{$match}}", $table, $sql);
+            }
+        }
 
-		return $sql;
-	}
+        return $sql;
+    }
 
-	/**
-	 * Get records from DB.
-	 */
-	public function get_records_sql($sql, $params = array()) {
-		$sql = $this->substitute_tables($sql);
-		$stmt = $this->prepare($sql);
+    /**
+     * Execute SQL and return statement
+     */
+    public function execute($sql, $params = array()) {
+        $sql = $this->substitute_tables($sql);
+        $stmt = $this->prepare($sql);
 
-		foreach ($params as $k => $v) {
-			$stmt->bindValue(":$k", $v);
-		}
+        foreach ($params as $k => $v) {
+            if (!is_int($k)) {
+                $k = ":{$k}";
+            }
 
-		$stmt->execute();
+            $stmt->bindValue($k, $v);
+        }
 
-		$results = array();
-		while (($obj = $stmt->fetchObject()) !== false) {
+        if ($stmt->execute() === false) {
+            throw new \Rapid\Exception("Exception during database execute.", $this->errorInfo());
+        }
+
+        return $stmt;
+    }
+
+    /**
+     * Get records from DB.
+     */
+    public function get_records_sql($sql, $params = array()) {
+        $stmt = $this->execute($sql, $params);
+
+        $results = array();
+        while (($obj = $stmt->fetchObject()) !== false) {
             if (isset($obj->id)) {
-    			$results[$obj->id] = $obj;
+                $results[$obj->id] = $obj;
             } else {
                 $results[] = $obj;
             }
-		}
+        }
 
-		$stmt->closeCursor();
+        $stmt->closeCursor();
 
-		return $results;
-	}
+        return $results;
+    }
 
-	/**
-	 * Get records from DB.
-	 */
-	public function get_records($table, $params = array(), $fields = '*') {
+    /**
+     * Get records from DB.
+     */
+    public function get_records($table, $params = array(), $fields = '*') {
         if (is_array($fields)) {
             $fields = implode(', ', $fields);
         }
 
-		$sql = "SELECT * FROM {{$table}}";
+        $sql = "SELECT * FROM {{$table}}";
 
-		if (!empty($params)) {
-			$sql .= ' WHERE';
+        if (!empty($params)) {
+            $sql .= ' WHERE';
 
-			$joins = array();
-			foreach ($params as $k => $v) {
-				$joins[] = "`{$k}`= :{$k}";
-			}
-
-			$sql .= ' ' . implode(' AND ', $joins);
-		}
-
-		return $this->get_records_sql($sql, $params);
-	}
-
-	/**
-	 * Get a record from DB.
-	 */
-	public function get_record($table, $params = array()) {
-		$results = $this->get_records($table, $params);
-		$count = count($results);
-
-		if ($count > 1) {
-			throw new \Exception('get_record() yielded multiple results!');
-		}
-
-		if ($count === 0) {
-			return false;
-		}
-
-		return array_pop($results);
-	}
-
-	/**
-	 * Get records from DB and convert them to models.
-	 */
-	public function get_models($model, $params = array()) {
-		$obj = new $model();
-		$table = $obj->get_table();
-
-		$data = $this->get_records($table, $params);
-
-		$results = array();
-		foreach ($data as $datum) {
-			$obj = new $model();
-			$obj->bulk_set_data($datum, true);
-			$results[] = $obj;
-		}
-
-		return $results;
-	}
-
-	/**
-	 * Get a record from DB and convert it to a model.
-	 */
-	public function get_model($model, $params = array()) {
-		$results = $this->get_models($model, $params);
-		$count = count($results);
-
-		if ($count > 1) {
-			throw new \Exception('get_model() yielded multiple results!');
-		}
-
-		if ($count === 0) {
-			return false;
-		}
-
-		return array_pop($results);
-	}
-
-    /**
-     * Insert a record.
-     */
-    public function insert_record($table, $values) {
-        $table = $this->get_table($table);
-
-        $sqlkeys = join(', ', array_keys($values));
-
-        $sqlvalues = array();
-        foreach ($values as $k => $v) {
-            $sqlvalues[] = ":{$k}";
-        }
-        $sqlvalues = join(', ', $sqlvalues);
-
-        $stmt = $this->prepare("INSERT INTO {$table} ({$sqlkeys}) VALUES ({$sqlvalues})");
-        foreach ($values as $k => $v) {
-            $stmt->bindValue(":{$k}", $v);
-        }
-
-        $stmt->execute();
-
-        return $this->lastInsertId();
-    }
-
-    /**
-     * Update a record.
-     */
-    public function update_record($table, $values) {
-        $table = $this->get_table($table);
-
-        if (!isset($values['id'])) {
-            throw new \Exception('update_record() must have ID set in values array.');
-        }
-
-        $sql = array();
-        foreach ($values as $k => $v) {
-            if ($k == 'id') {
-                continue;
+            $joins = array();
+            foreach ($params as $k => $v) {
+                $joins[] = "`{$k}`= :{$k}";
             }
 
-            $sql[] = "`{$k}` = :{$k}";
-        }
-        $sql = join(', ', $sql);
-
-        $stmt = $this->prepare("UPDATE {$table} SET {$sql} WHERE `id`=:id");
-        foreach ($values as $k => $v) {
-            $stmt->bindValue(":{$k}", $v);
+            $sql .= ' ' . implode(' AND ', $joins);
         }
 
-        if ($stmt->execute() === false) {
-            print_r($this->errorInfo());
-            return false;
-        }
-
-        return true;
+        return $this->get_records_sql($sql, $params);
     }
 
     /**
-     * Delete a record.
+     * Get a record from DB.
      */
-    public function delete_record($table, $values) {
-        $table = $this->get_table($table);
+    public function get_record($table, $params = array()) {
+        $results = $this->get_records($table, $params);
+        $count = count($results);
 
-        $sql = array();
-        foreach ($values as $k => $v) {
-            $sql[] = "`{$k}` = :{$k}";
-        }
-        $sql = join(' AND ', $sql);
-
-        $stmt = $this->prepare("DELETE FROM {$table} WHERE {$sql}");
-        foreach ($values as $k => $v) {
-            $stmt->bindValue(":{$k}", $v);
+        if ($count > 1) {
+            throw new \Rapid\Exception('get_record() yielded multiple results!');
         }
 
-        if ($stmt->execute() === false) {
-            print_r($this->errorInfo());
-            return false;
+        if ($count === 0) {
+            return null;
         }
 
-        return true;
+        return array_pop($results);
     }
 
     /**
@@ -242,5 +138,118 @@ class PDO extends \PDO
         }, $records);
 
         return $results;
+    }
+
+    /**
+     * Get records from DB and convert them to models.
+     */
+    public function get_models($model, $params = array()) {
+        $obj = new $model();
+        $table = $obj->get_table();
+
+        $data = $this->get_records($table, $params);
+
+        $results = array();
+        foreach ($data as $datum) {
+            $obj = new $model();
+            $obj->bulk_set_data($datum, true);
+            $results[] = $obj;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get a record from DB and convert it to a model.
+     */
+    public function get_model($model, $params = array()) {
+        $results = $this->get_models($model, $params);
+        $count = count($results);
+
+        if ($count > 1) {
+            throw new \Rapid\Exception('get_model() yielded multiple results!');
+        }
+
+        if ($count === 0) {
+            return null;
+        }
+
+        return array_pop($results);
+    }
+
+    /**
+     * Insert a record.
+     */
+    public function insert_record($table, $params) {
+        if (empty($params)) {
+            throw new \Rapid\Exception("Error in call to insert_record(...): \$params cannot be empty!");
+        }
+
+        $sqlkeys = join(', ', array_keys($params));
+
+        $sqlvalues = array();
+        foreach ($params as $k => $v) {
+            $sqlvalues[] = ":{$k}";
+        }
+        $sqlvalues = join(', ', $sqlvalues);
+
+        $sql = "INSERT INTO {{$table}} ({$sqlkeys}) VALUES ({$sqlvalues})";
+
+        $this->execute($sql, $params);
+
+        return $this->lastInsertId();
+    }
+
+    /**
+     * Update a record.
+     */
+    public function update_record($table, $params) {
+        if (!isset($params['id'])) {
+            throw new \Exception('update_record() must have ID set in params array.');
+        }
+
+        $sql = array();
+        foreach ($params as $k => $v) {
+            if ($k == 'id') {
+                continue;
+            }
+
+            $sql[] = "`{$k}` = :{$k}";
+        }
+        $sql = join(', ', $sql);
+        $sql = "UPDATE {{$table}} SET {$sql} WHERE `id`=:id";
+
+        $this->execute($sql, $params);
+
+        return true;
+    }
+
+    /**
+     * Delete records matching the values in $params.
+     */
+    public function delete_records($table, $params) {
+        if (empty($params)) {
+            throw new \Rapid\Exception("Error in call to delete_records(...): \$params cannot be empty!");
+        }
+
+        $sql = array();
+        foreach ($params as $k => $v) {
+            $sql[] = "`{$k}` = :{$k}";
+        }
+        $sql = join(' AND ', $sql);
+        $sql = "DELETE FROM {{$table}} WHERE {$sql}";
+
+        $this->execute($sql, $params);
+
+        return true;
+    }
+
+    /**
+     * Delete all records in a table.
+     */
+    public function truncate($table) {
+        $this->execute("TRUNCATE {{$table}}");
+
+        return true;
     }
 }

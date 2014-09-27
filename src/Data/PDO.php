@@ -150,6 +150,39 @@ class PDO extends \PDO
 	}
 
     /**
+     * Update a record.
+     */
+    public function update_record($table, $values) {
+        $table = $this->get_table($table);
+
+        if (!isset($values['id'])) {
+            throw new \Exception('update_record() must have ID set in values array.');
+        }
+
+        $sql = array();
+        foreach ($values as $k => $v) {
+            if ($k == 'id') {
+                continue;
+            }
+
+            $sql[] = "`{$k}` = :{$k}";
+        }
+        $sql = join(', ', $sql);
+
+        $stmt = $this->prepare("UPDATE {$table} SET {$sql} WHERE `id`=:id");
+        foreach ($values as $k => $v) {
+            $stmt->bindValue(":{$k}", $v);
+        }
+
+        if ($stmt->execute() === false) {
+            print_r($this->errorInfo());
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Delete a record.
      */
     public function delete_record($table, $values) {

@@ -173,4 +173,17 @@ class PDO extends \PDO
 
         return true;
     }
+
+    /**
+     * Returns an array containing values of $field
+     */
+    public function get_fieldset($table, $field, $params = array()) {
+        $records = $this->get_records($table, $params, $field);
+
+        $results = array_map(function($obj) use($field) {
+            return $obj->$field;
+        }, $records);
+
+        return $results;
+    }
 }

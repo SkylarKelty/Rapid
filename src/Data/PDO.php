@@ -58,7 +58,11 @@ class PDO extends \PDO
 
 		$results = array();
 		while (($obj = $stmt->fetchObject()) !== false) {
-			$results[$obj->id] = $obj;
+            if (isset($obj->id)) {
+    			$results[$obj->id] = $obj;
+            } else {
+                $results[] = $obj;
+            }
 		}
 
 		$stmt->closeCursor();
@@ -69,7 +73,11 @@ class PDO extends \PDO
 	/**
 	 * Get records from DB.
 	 */
-	public function get_records($table, $params = array()) {
+	public function get_records($table, $params = array(), $fields = '*') {
+        if (is_array($fields)) {
+            $fields = implode(', ', $fields);
+        }
+
 		$sql = "SELECT * FROM {{$table}}";
 
 		if (!empty($params)) {

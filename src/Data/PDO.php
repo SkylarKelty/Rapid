@@ -7,8 +7,28 @@
 
 namespace Rapid\Data;
 
-class PDO extends \PDO
+class PDO
 {
+    /**
+     * PDO object.
+     */
+    private $db;
+
+    /**
+     * DSN.
+     */
+    private $dsn;
+
+    /**
+     * Username.
+     */
+    private $username;
+
+    /**
+     * Password.
+     */
+    private $password;
+
     /**
      * Table prefix.
      */
@@ -18,8 +38,68 @@ class PDO extends \PDO
      * Constructor
      */
     public function __construct($engine, $hostname, $port, $dbname, $username, $password, $prefix) {
-        parent::__construct("$engine:host=$hostname;port=$port;dbname=$dbname", $username, $password);
+        $this->dsn = "$engine:host=$hostname;port=$port;dbname=$dbname";
+        $this->username = $username;
+        $this->password = $password;
         $this->prefix = $prefix;
+
+        $this->db = new \PDO($this->dsn, $this->username, $this->password);
+    }
+
+    /**
+     * Magic!
+     */
+    public function __destruct() {
+        $this->db = null;
+    }
+
+    /**
+     * Magic!
+     */
+    public function __sleep() {
+        return array();
+    }
+
+    /**
+     * Magic!
+     */
+    public function __wakeup() {
+        $this->db = new \PDO($this->dsn, $this->username, $this->password);
+    }
+
+    /**
+     * Magic!
+     */
+    public function __get($name) {
+        return $this->db->$name;
+    }
+
+    /**
+     * Magic!
+     */
+    public function __set($name, $value) {
+        $this->db->$name = $value;
+    }
+
+    /**
+     * Magic!
+     */
+    public function __isset($name) {
+        return isset($this->db->$name);
+    }
+
+    /**
+     * Magic!
+     */
+    public function __unset($name) {
+        unset($this->db->$name);
+    }
+
+    /**
+     * Magic!
+     */
+    public function __call($func, $params) {
+        return call_user_func_array(array($this->db, $func), $params);
     }
 
     /**

@@ -64,7 +64,7 @@ class PDO
      * Magic!
      */
     public function __wakeup() {
-        $this->db = new \PDO($this->dsn, $this->username, $this->password);
+        $this->reset();
     }
 
     /**
@@ -100,6 +100,13 @@ class PDO
      */
     public function __call($func, $params) {
         return call_user_func_array(array($this->db, $func), $params);
+    }
+
+    /**
+     * Magic!
+     */
+    public function reset() {
+        $this->db = new \PDO($this->dsn, $this->username, $this->password);
     }
 
     /**

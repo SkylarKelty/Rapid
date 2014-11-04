@@ -189,6 +189,7 @@ class PDO extends \PDO
      * Insert a record.
      */
     public function insert_record($table, $params) {
+        $params = (array)$params;
         if (empty($params)) {
             throw new \Rapid\Exception("Error in call to insert_record(...): \$params cannot be empty!");
         }
@@ -212,6 +213,7 @@ class PDO extends \PDO
      * Update a record.
      */
     public function update_record($table, $params) {
+        $params = (array)$params;
         if (!isset($params['id'])) {
             throw new \Exception('update_record() must have ID set in params array.');
         }
@@ -230,6 +232,22 @@ class PDO extends \PDO
         $this->execute($sql, $params);
 
         return true;
+    }
+    
+    /**
+     * Update or Insert helper
+     */
+    public function update_or_insert($table, $params) {
+        $params = (array)$params;
+
+        $records = $this->get_records($table, $params);
+        if (count($records) == 1) {
+            $record = array_pop($records);
+            $params['id'] = $record->id;
+            return $this->update_record($table, $params);
+        }
+
+        return $this->insert_record($table, $params);
     }
 
     /**

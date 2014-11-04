@@ -237,10 +237,10 @@ class PDO extends \PDO
     /**
      * Update or Insert helper
      */
-    public function update_or_insert($table, $params) {
+    public function update_or_insert($table, $searchparams, $params) {
         $params = (array)$params;
 
-        $records = $this->get_records($table, $params);
+        $records = $this->get_records($table, $searchparams);
         if (count($records) == 1) {
             $record = array_pop($records);
             $params['id'] = $record->id;

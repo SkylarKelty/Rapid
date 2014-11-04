@@ -126,6 +126,14 @@ class PDO extends \PDO
 
         return array_pop($results);
     }
+    
+    /**
+     * Returns a single field.
+     */
+    public function get_field($table, $field, $params = array()) {
+        $record = $this->get_record($table, $params);
+        return ($record && isset($record->$field)) ? $record->$field : null;
+    }
 
     /**
      * Returns an array containing values of $field

@@ -178,15 +178,10 @@ class PDO
     }
 
     /**
-     * Get records from DB.
+     * Get WHERE clause.
      */
-    public function get_records($table, $params = array(), $fields = '*') {
-        if (is_array($fields)) {
-            $fields = implode(', ', $fields);
-        }
-
-        $sql = "SELECT * FROM {{$table}}";
-
+    protected function get_where_clause($params = array()) {
+        $sql = '';
         if (!empty($params)) {
             $sql .= ' WHERE';
 
@@ -197,6 +192,20 @@ class PDO
 
             $sql .= ' ' . implode(' AND ', $joins);
         }
+
+        return $sql;
+    }
+
+    /**
+     * Get records from DB.
+     */
+    public function get_records($table, $params = array(), $fields = '*') {
+        if (is_array($fields)) {
+            $fields = implode(', ', $fields);
+        }
+
+        $sql = "SELECT * FROM {{$table}}";
+        $sql .= $this->get_where_clause($params);
 
         return $this->get_records_sql($sql, $params);
     }
@@ -384,6 +393,25 @@ class PDO
         $this->execute($sql, $params);
 
         return true;
+    }
+
+    /**
+     * Count records.
+     */
+    public function count_records($table, $params = array()) {
+        $params = (array)$params;
+
+        $sql = "SELECT COUNT(*) AS count FROM {{$table}}";
+        $sql .= $this->get_where_clause($params);
+
+        $results = $this->get_records_sql($sql, $params);
+
+        if (empty($results)) {
+            throw new \Rapid\Exception("Error in call to count_records(...): No result from database, possibly a bad table name?");
+        }
+
+        $count = array_pop($results);
+        return $count->count;
     }
 
     /**

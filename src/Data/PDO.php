@@ -295,11 +295,16 @@ class PDO
             throw new \Rapid\Exception("Error in call to insert_record(...): \$params cannot be empty!");
         }
 
-        $sqlkeys = array_keys($params[0]);
+        $sqlkeys = array();
+        $linezero = $params[0];
+        ksort($linezero);
+        $sqlkeys = array_keys($linezero);
 
         $sqlvalues = array();
         $binds = array();
         foreach ($params as $line) {
+            ksort($line);
+
             $linevals = array();
             foreach ($line as $k => $v) {
                 if (!in_array($k, $sqlkeys)) {
@@ -313,8 +318,8 @@ class PDO
         }
         $sqlvalues = join(', ', $sqlvalues);
 
-        $sqlkeys = join(', ', array_keys($params[0]));
-        $sql = "INSERT INTO {{$table}} ({$sqlkeys}) VALUES ({$sqlvalues})";
+        $sqlkeys = join(', ', $sqlkeys);
+        $sql = "INSERT INTO {{$table}} ({$sqlkeys}) VALUES {$sqlvalues}";
 
         $this->execute($sql, $binds);
     }

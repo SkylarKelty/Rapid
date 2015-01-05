@@ -140,6 +140,8 @@ class PDO
         foreach ($params as $k => $v) {
             if (!is_int($k)) {
                 $k = ":{$k}";
+            } else {
+                $k++;
             }
 
             $stmt->bindValue($k, $v);
@@ -276,25 +278,49 @@ class PDO
     }
 
     /**
-     * Insert a record.
+     * Insert records.
      */
-    public function insert_record($table, $params) {
+    public function insert_records($table, $params) {
         $params = (array)$params;
         if (empty($params)) {
             throw new \Rapid\Exception("Error in call to insert_record(...): \$params cannot be empty!");
         }
 
-        $sqlkeys = join(', ', array_keys($params));
+        $sqlkeys = array_keys($params[0]);
 
         $sqlvalues = array();
-        foreach ($params as $k => $v) {
-            $sqlvalues[] = ":{$k}";
+        $binds = array();
+        foreach ($params as $line) {
+            $linevals = array();
+            foreach ($line as $k => $v) {
+                if (!in_array($k, $sqlkeys)) {
+                    throw new \Rapid\Exception("Error in call to insert_record(...): Inconsistent keys!");
+                }
+
+                $linevals[] = "?";
+                $binds[] = $v;
+            }
+            $sqlvalues[] = '(' . join(', ', $linevals) . ')';
         }
         $sqlvalues = join(', ', $sqlvalues);
 
+        $sqlkeys = join(', ', array_keys($params[0]));
         $sql = "INSERT INTO {{$table}} ({$sqlkeys}) VALUES ({$sqlvalues})";
 
-        $this->execute($sql, $params);
+        $this->execute($sql, $binds);
+    }
+
+    /**
+     * Insert a record.
+     */
+    public function insert_record($table, $params) {
+        $params = (array)$params;
+
+        if (empty($params)) {
+            throw new \Rapid\Exception("Error in call to insert_record(...): \$params cannot be empty!");
+        }
+
+        $this->insert_records($table, array($params));
 
         return $this->lastInsertId();
     }

@@ -204,20 +204,33 @@ HTML5;
 	 * Print an error page.
 	 */
 	public function error_page($message) {
-		global $PAGE;
+		if (!$this->outputstarted) {
+			echo <<<HTML5
+				<!DOCTYPE html>
+				<html lang="en">
+					<head>
+					<meta charset="utf-8">
+					<meta http-equiv="X-UA-Compatible" content="IE=edge">
+					<meta name="viewport" content="width=device-width, initial-scale=1">
+					<title>Oops!</title>
 
-		$structure = !$this->outputstarted;
-
-		if ($structure) {
-			$this->header();
-			$this->heading('Oops!');
+					<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+				</head>
+				<body role="document">
+					<div class="container page-content" role="main">
+HTML5;
 		}
 
 		echo '<p>An error was encountered during execution.<br />The details are below...</p>';
 		echo $message;
+		print_r(debug_backtrace());
 
-		if ($structure) {
-			$this->footer();
+		if (!$this->outputstarted) {
+			echo <<<HTML5
+					</div>
+				</body>
+			</html>
+HTML5;
 		}
 
 		die;

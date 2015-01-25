@@ -107,7 +107,7 @@ class URL
 		if (!empty($this->parameters)) {
 			$parameters = array();
 			foreach ($this->parameters as $k => $v) {
-				$parameters[] = url_encode($k) . '=' . url_encode($v);
+				$parameters[] = urlencode($k) . '=' . urlencode($v);
 			}
 
 			$url = '?' . implode('&', $parameters);

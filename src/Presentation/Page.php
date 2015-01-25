@@ -28,26 +28,8 @@ class Page
 		$this->title = '';
 		$this->url = '/';
 		$this->notifications = array();
-
-		// Build a list of stylesheets.
 		$this->stylesheets = array();
-		$cssdir = substr($CFG->cssroot, strlen($CFG->dirroot) + 1);
-		$list = scandir($CFG->cssroot);
-		foreach ($list as $filename) {
-			if (strpos($filename, '.css') !== false) {
-				$this->require_css($cssdir . '/' . $filename);
-			}
-		}
-
-		// Build a list of scripts.
 		$this->scripts = array();
-		$jsdir = substr($CFG->jsroot, strlen($CFG->dirroot) + 1);
-		$list = scandir($CFG->jsroot);
-		foreach ($list as $filename) {
-			if (strpos($filename, '.js') !== false) {
-				$this->require_js($jsdir . '/' . $filename);
-			}
-		}
 
 		// Build basic nav structure.
 		$this->navigation = array(
@@ -91,10 +73,27 @@ class Page
 	}
 
 	/**
+	 * Scans media dirs for stylesheets.
+	 */
+	private function scan_stylesheets() {
+		global $CFG;
+
+		$cssdir = substr($CFG->cssroot, strlen($CFG->dirroot) + 1);
+		$list = scandir($CFG->cssroot);
+		foreach ($list as $filename) {
+			if (strpos($filename, '.css') !== false) {
+				$this->require_css($cssdir . '/' . $filename);
+			}
+		}
+	}
+
+	/**
 	 * Returns all stylesheets.
 	 */
 	public function get_stylesheets() {
 		global $CFG;
+
+		$this->scan_stylesheets();
 
 		$sheets = array_unique($this->stylesheets);
 		$str = '';
@@ -105,10 +104,27 @@ class Page
 	}
 
 	/**
+	 * Scans media dirs for javascript.
+	 */
+	private function scan_javascripts() {
+		global $CFG;
+
+		$jsdir = substr($CFG->jsroot, strlen($CFG->dirroot) + 1);
+		$list = scandir($CFG->jsroot);
+		foreach ($list as $filename) {
+			if (strpos($filename, '.js') !== false) {
+				$this->require_js($jsdir . '/' . $filename);
+			}
+		}
+	}
+
+	/**
 	 * Returns all javascript.
 	 */
 	public function get_javascript() {
 		global $CFG;
+
+		$this->scan_javascripts();
 
 		$scripts = array_unique($this->scripts);
 		$str = '';

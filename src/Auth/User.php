@@ -20,13 +20,7 @@ class User
 		if (isset($SESSION->_user)) {
 			$this->user = $SESSION->_user;
 		} else {
-			$this->user = array(
-				'id' => 0,
-				'username' => 'guest',
-				'firstname' => 'Guest',
-				'lastname' => 'User',
-				'email' => ''
-			);
+			$this->reset();
 		}
 	}
 
@@ -34,6 +28,8 @@ class User
 	 * Reset USER (logout).
 	 */
 	public function reset() {
+		global $SESSION;
+
 		$this->user = array(
 			'id' => 0,
 			'username' => 'guest',

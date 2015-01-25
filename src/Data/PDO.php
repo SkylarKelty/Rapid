@@ -43,7 +43,9 @@ class PDO
         $this->password = $password;
         $this->prefix = $prefix;
 
-        $this->db = new \PDO($this->dsn, $this->username, $this->password);
+        $this->db = new \PDO($this->dsn, $this->username, $this->password, array(
+            \PDO::ATTR_PERSISTENT => true
+        ));
     }
 
     /**

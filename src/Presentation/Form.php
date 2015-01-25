@@ -52,7 +52,7 @@ class Form
 	/**
 	 * Add an element.
 	 */
-	public function add_element($name, $type, $default = '') {
+	public function add_element($name, $type, $default = '', $label = '') {
 		$element = 'input';
 		$formtype = 'text';
 
@@ -93,6 +93,7 @@ class Form
 			'element' => $element,
 			'type' => $formtype,
 			'value' => $default,
+			'label' => empty($label) ? $name : $label,
 			'submitted' => false
 		);
 
@@ -152,7 +153,7 @@ class Form
 			$type = $v['type'];
 			$value = $OUTPUT->escape_string($v['value']);
 			$id = "frm" . $id++;
-			$label = $OUTPUT->escape_string(ucwords($k));
+			$label = $OUTPUT->escape_string(ucwords($v['label']));
 
 			$str .= '<div class="form-group">';
 

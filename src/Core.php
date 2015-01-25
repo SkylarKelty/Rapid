@@ -17,8 +17,7 @@ class Core
 	 */
 	public static function handle_exception($e) {
 		global $OUTPUT;
-
-		$OUTPUT->error_page((string)$e);
+		$OUTPUT->error_page();
 	}
 
 	/**

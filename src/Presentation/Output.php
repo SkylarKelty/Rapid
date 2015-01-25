@@ -201,6 +201,58 @@ HTML5;
 	}
 
 	/**
+	 * Escapes a string to be safe.
+	 */
+	public function escape_string($var) {
+		return htmlspecialchars($var, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', false);
+	}
+
+	/**
+	 * Pretty-print a debug backtrace line.
+	 */
+	private function print_debug_trace($trace) {
+		$body = '';
+		foreach ($trace['args'] as $arg) {
+			if ($arg instanceof \Exception) {
+				$trace = $arg->getTrace();
+				$trace = $trace[0];
+				$body .= '<p>' . $arg->getMessage() . '</p>';
+			} else {
+				$body .= '<p>' . (string)$arg . '</p>';
+			}
+		}
+
+		$method = '';
+		if (isset($trace['class'])) {
+			$method .= $trace['class'];
+		}
+		if (isset($trace['type'])) {
+			$method .= $trace['type'];
+		}
+		if (isset($trace['function'])) {
+			$method .= $trace['function'] . '()';
+		}
+
+		if ($method == 'Rapid\Presentation\Output->error_page()') {
+			return;
+		}
+
+		if (isset($trace['file'])) {
+			$filename = $trace['file'] . ' (' . $trace['line'] . ')';
+			$title = "{$filename} - {$method}";
+		} else {
+			$title = $method;
+		}
+
+		echo <<<HTML5
+			<div class="panel panel-danger" role="alert">
+				<div class="panel-heading">{$title}</div>
+				<div class="panel-body">{$body}</div>
+			</div>
+HTML5;
+	}
+
+	/**
 	 * Print an error page.
 	 */
 	public function error_page($message) {
@@ -222,8 +274,12 @@ HTML5;
 		}
 
 		echo '<p>An error was encountered during execution.<br />The details are below...</p>';
-		echo $message;
-		print_r(debug_backtrace());
+		echo '<p>' . $message . '</p>';
+
+		$backtrace = debug_backtrace();
+		foreach ($backtrace as $level => $trace) {
+			$this->print_debug_trace($trace);
+		}
 
 		if (!$this->outputstarted) {
 			echo <<<HTML5
@@ -234,12 +290,5 @@ HTML5;
 		}
 
 		die;
-	}
-
-	/**
-	 * Escapes a string to be safe.
-	 */
-	public function escape_string($var) {
-		return htmlspecialchars($var, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', false);
 	}
 }

@@ -92,11 +92,13 @@ class Form
 		$this->fields[$name] = array(
 			'element' => $element,
 			'type' => $formtype,
-			'value' => $default
+			'value' => $default,
+			'submitted' => false
 		);
 
 		if (isset($_REQUEST[$name])) {
 			$this->set_field($name, $_REQUEST[$name]);
+			$this->fields[$name]['submitted'] = true;
 		}
 	}
 
@@ -114,6 +116,25 @@ class Form
 		foreach ($data as $k => $v) {
 			$this->set_field($k, $v);
 		}
+	}
+
+	/**
+	 * Returns data of submitted form fields.
+	 */
+	public function get_data() {
+		$return = array();
+		foreach ($this->fields as $k => $v) {
+			if ($v['submitted']) {
+				$return[$k] = $v['value'];
+			}
+		}
+
+		// Incomplete?
+		if (count($return) !== count($this->fields)) {
+			return null;
+		}
+
+		return $return;
 	}
 
 	/**

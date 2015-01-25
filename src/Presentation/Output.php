@@ -152,6 +152,21 @@ HTML5;
 	}
 
 	/**
+	 * Renders an alert.
+	 */
+	public function alert($text, $type = 'info', $dismissable = false) {
+		$str = '';
+		if ($dismissable) {
+			$str .= "<div class=\"alert alert-{$type} alert-dismissible developer-notification\" role=\"alert\">";
+			$str .= '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+			$str .= "{$text}</div>";
+		} else {
+			$str .= "<div class=\"alert alert-{$type}\" role=\"alert\">{$text}</div>";
+		}
+		return $str;
+	}
+
+	/**
 	 * Renders notifications.
 	 */
 	private function render_notifications($notifications) {

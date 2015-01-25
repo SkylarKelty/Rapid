@@ -17,16 +17,16 @@ class User
 	public function __construct() {
 		global $SESSION;
 
-		$this->user = array(
-			'id' => 0,
-			'username' => 'guest',
-			'firstname' => 'Guest',
-			'lastname' => 'User',
-			'email' => ''
-		);
-
 		if (isset($SESSION->_user)) {
 			$this->user = $SESSION->_user;
+		} else {
+			$this->user = array(
+				'id' => 0,
+				'username' => 'guest',
+				'firstname' => 'Guest',
+				'lastname' => 'User',
+				'email' => ''
+			);
 		}
 	}
 

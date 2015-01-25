@@ -17,6 +17,7 @@ class Page
 	private $scripts;
 	private $title;
 	private $url;
+	private $notifications;
 
 	/**
 	 * Constructor.
@@ -26,6 +27,7 @@ class Page
 
 		$this->title = '';
 		$this->url = '/';
+		$this->notifications = array();
 
 		// Build a list of stylesheets.
 		$this->stylesheets = array();
@@ -170,5 +172,26 @@ class Page
 
 		header('Location: ' . $url);
 		die("Redirecting you to '$url'...");
+	}
+
+	/**
+	 * Notify the user about something.
+	 */
+	public function notify($message) {
+		if ($this->notifications === null) {
+			echo $message;
+			return;
+		}
+
+		$this->notifications[] = $message;
+	}
+
+	/**
+	 * Returns all notifications.
+	 */
+	public function get_notifications() {
+		$notifications = $this->notifications;
+		$this->notifications = null;
+		return $notifications;
 	}
 }

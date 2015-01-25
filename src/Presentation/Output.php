@@ -146,16 +146,33 @@ HTML5;
 	}
 
 	/**
+	 * Renders notifications.
+	 */
+	private function render_notifications($notifications) {
+		$out = "";
+		foreach ($notifications as $notification) {
+			$out .= "<div class=\"notification\">{$notification}</div>";
+		}
+
+		return $out ;
+	}
+
+	/**
 	 * Prints a footer.
 	 */
 	public function footer() {
 		global $PAGE;
 
 		$scripts = $PAGE->get_javascript();
+		$notifications = $PAGE->get_notifications();
+		$notifications = $this->render_notifications($notifications);
 
 		echo <<<HTML5
 				</div>
 			    $scripts
+			    <div class="notifications">
+			    	$notifications
+			    </div>
 			  </body>
 			</html>
 HTML5;

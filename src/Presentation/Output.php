@@ -222,4 +222,11 @@ HTML5;
 
 		die;
 	}
+
+	/**
+	 * Escapes a string to be safe.
+	 */
+	public function escape_string($var) {
+		return htmlspecialchars($var, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8', false);
+	}
 }

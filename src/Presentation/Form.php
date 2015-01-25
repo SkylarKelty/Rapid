@@ -94,6 +94,10 @@ class Form
 			'type' => $formtype,
 			'value' => $default
 		);
+
+		if (isset($_REQUEST[$name])) {
+			$this->set_data($name, $_REQUEST[$name]);
+		}
 	}
 
 	/**
@@ -109,6 +113,8 @@ class Form
 	 * To string magic.
 	 */
 	public function __toString() {
+		global $OUTPUT;
+
 		static $id = 0;
 
 		$action = new \Rapid\URL($this->action);
@@ -116,9 +122,9 @@ class Form
 
 		foreach ($this->fields as $k => $v) {
 			$type = $v['type'];
-			$value = $v['value'];
+			$value = $OUTPUT->escape_string($v['value']);
 			$id = "frm" . $id++;
-			$label = ucwords($k);
+			$label = $OUTPUT->escape_string(ucwords($k));
 
 			$str .= '<div class="form-group">';
 

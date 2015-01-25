@@ -18,7 +18,7 @@ class URL
 	/**
 	 * Creates a URL that will always be joined to wwwroot.
 	 */
-	public function __construct($base = '') {
+	public function __construct($base = '', $params = array()) {
 		global $CFG;
 
 		$this->parameters = array();
@@ -36,6 +36,11 @@ class URL
 		// Take out parameters.
 		list($base, $parameters) = static::extract_parameters($base);
 		$this->parameters = $parameters;
+
+		// Merge in our own params.
+		foreach ($params as $k => $v) {
+			$this->set_param($k, $v);
+		}
 
 		if (strpos($base, 'http') !== 0 && strpos($base, '//') !== 0) {
 			$base = ltrim($base, '/');

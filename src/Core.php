@@ -16,9 +16,9 @@ class Core
 	 * Handle an exception.
 	 */
 	public static function handle_exception($e) {
-		global $PAGE;
+		global $OUTPUT;
 
-		$PAGE->notify((string)$e);
+		$OUTPUT->error_page((string)$e);
 	}
 
 	/**
@@ -27,6 +27,8 @@ class Core
 	public static function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 		global $PAGE;
 
+		$message = "Issue in {$errfile} ({$errline}): {$errstr}.";
+
 		switch ($errno) {
 			case E_STRICT:
 			case E_DEPRECATED:
@@ -34,7 +36,6 @@ class Core
 			case E_WARNING:
 			case E_USER_WARNING:
 			case E_USER_NOTICE:
-				$message = "Issue in {$errfile} ({$errline}): {$errstr}.";
 				if (isset($PAGE)) {
 					$PAGE->notify($message);
 				} else {
@@ -44,7 +45,7 @@ class Core
 
 			case E_ERROR:
 			case E_USER_ERROR:
-				// TODO - fast exit a nice Page.
+				$OUTPUT->error_page($message);
 			break;
 		}
 

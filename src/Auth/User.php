@@ -18,6 +18,7 @@ class User
 		global $SESSION;
 
 		$this->user = array(
+			'id' => 0,
 			'username' => 'guest',
 			'firstname' => 'Guest',
 			'lastname' => 'User',

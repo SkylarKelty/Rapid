@@ -155,14 +155,25 @@ HTML5;
 	 * Renders notifications.
 	 */
 	private function render_notifications($notifications) {
-		$out = "";
+		if (empty($notifications)) {
+			return "";
+		}
+
+		$out = '<div class="panel panel-warning developer-notifications">
+					<div class="panel-heading">
+						<h3 class="panel-title">Developer Notifications</h3>
+					</div>
+					<div class="panel-body">';
+
 		foreach ($notifications as $notification) {
 			$out .= '<div class="alert alert-info alert-dismissible developer-notification" role="alert">';
 			$out .= '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
 			$out .= "{$notification}</div>";
 		}
 
-		return $out ;
+		$out .= '</div></div>';
+
+		return $out;
 	}
 
 	/**
@@ -178,14 +189,7 @@ HTML5;
 		echo <<<HTML5
 				</div>
 			    $scripts
-			    <div class="panel panel-warning developer-notifications">
-					<div class="panel-heading">
-						<h3 class="panel-title">Developer Notifications</h3>
-					</div>
-					<div class="panel-body">
-			    		$notifications
-					</div>
-			    </div>
+			    $notifications
 			  </body>
 			</html>
 HTML5;

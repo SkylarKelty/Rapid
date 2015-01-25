@@ -96,8 +96,15 @@ class Form
 		);
 
 		if (isset($_REQUEST[$name])) {
-			$this->set_data($name, $_REQUEST[$name]);
+			$this->set_field($name, $_REQUEST[$name]);
 		}
+	}
+
+	/**
+	 * Sets value of form field.
+	 */
+	public function set_field($field, $value) {
+		$this->fields[$field]['value'] = $value;
 	}
 
 	/**
@@ -105,7 +112,7 @@ class Form
 	 */
 	public function set_data($data) {
 		foreach ($data as $k => $v) {
-			$this->fields[$k]['value'] = $v;
+			$this->set_field($k, $v);
 		}
 	}
 

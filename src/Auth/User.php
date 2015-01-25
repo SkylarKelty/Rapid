@@ -31,6 +31,21 @@ class User
 	}
 
 	/**
+	 * Reset USER (logout).
+	 */
+	public function reset() {
+		$this->user = array(
+			'id' => 0,
+			'username' => 'guest',
+			'firstname' => 'Guest',
+			'lastname' => 'User',
+			'email' => ''
+		);
+
+		unset($SESSION->_user);
+	}
+
+	/**
 	 * Magic Sets.
 	 */
 	public function __set($name, $val) {

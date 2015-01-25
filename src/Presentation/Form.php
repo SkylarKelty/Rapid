@@ -12,6 +12,13 @@ namespace Rapid\Presentation;
  */
 class Form
 {
+	const TYPE_INT = 1;
+	const TYPE_STRING = 2;
+	const TYPE_BOOL = 4;
+	const TYPE_DECIMAL = 8;
+	const TYPE_TIMESTAMP = 16;
+	const TYPE_PASSWORD = 32;
+
 	private $action;
 	private $fields;
 
@@ -50,24 +57,28 @@ class Form
 		$formtype = 'text';
 
 		switch ($type) {
-			case \Rapid\Data\Model::TYPE_INT:
+			case static::TYPE_INT:
 				$formtype = 'number';
 				break;
 
-			case \Rapid\Data\Model::TYPE_STRING:
+			case static::TYPE_STRING:
 				$formtype = 'text';
 				break;
 
-			case \Rapid\Data\Model::TYPE_BOOL:
+			case static::TYPE_BOOL:
 				$formtype = 'checkbox';
 				break;
 
-			case \Rapid\Data\Model::TYPE_DECIMAL:
+			case static::TYPE_DECIMAL:
 				$formtype = 'number';
 				break;
 
-			case \Rapid\Data\Model::TYPE_TIMESTAMP:
+			case static::TYPE_TIMESTAMP:
 				$formtype = 'datetime';
+				break;
+
+			case static::TYPE_PASSWORD:
+				$formtype = 'password';
 				break;
 
 			case 'hidden':

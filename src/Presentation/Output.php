@@ -180,9 +180,14 @@ HTML5;
 	 * Prints a footer.
 	 */
 	public function footer() {
-		global $PAGE;
+		global $CFG, $PAGE;
 
 		$scripts = $PAGE->get_javascript();
+
+		if (isset($CFG->profiling_mode) && $CFG->profiling_mode) {
+			$PAGE->notify("Page loaded in " . sprintf("%f", microtime(true) - $CFG->_init_called) . "s.");
+		}
+
 		$notifications = $PAGE->get_notifications();
 		$notifications = $this->render_notifications($notifications);
 

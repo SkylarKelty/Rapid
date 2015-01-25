@@ -20,6 +20,10 @@ class Form
 	const TYPE_PASSWORD = 32;
 	const TYPE_EMAIL = 64;
 
+	const RULE_REQUIRED = 1;
+	const RULE_MIN_LENGTH = 2;
+	const RULE_MAX_LENGTH = 4;
+
 	private $action;
 	private $fields;
 
@@ -99,11 +103,13 @@ class Form
 			'type' => $formtype,
 			'value' => $default,
 			'label' => empty($label) ? $name : $label,
-			'submitted' => false
+			'submitted' => false,
+			'rules' => array(),
+			'errors' => array()
 		);
 
 		if (isset($_REQUEST[$name])) {
-			$this->set_field($name, $_REQUEST[$name]);
+			$this->set_field($name, trim($_REQUEST[$name]));
 			$this->fields[$name]['submitted'] = true;
 		}
 	}
@@ -132,6 +138,7 @@ class Form
 		foreach ($this->fields as $k => $v) {
 			if ($v['submitted']) {
 				$return[$k] = $v['value'];
+				$this->validate($k);
 			}
 		}
 
@@ -141,6 +148,70 @@ class Form
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Rules.
+	 */
+	public function add_rule($field, $rule, $value = '') {
+		$this->fields[$field]['rules'][$rule] = $value;
+	}
+
+	/**
+	 * Validate field.
+	 */
+	public function add_error($field, $error) {
+		$this->fields[$field]['errors'][] = $error;
+	}
+
+	/**
+	 * Validate field.
+	 */
+	private function validate($name) {
+		$field = $this->fields[$name];
+		if (empty($field['rules'])) {
+			return true;
+		}
+
+		$rules = $field['rules'];
+		foreach ($rules as $rule => $value) {
+			switch ($rule) {
+				case static::RULE_REQUIRED:
+					if (empty($field['value'])) {
+						$this->add_error($name, "cannot be blank!");
+						return false;
+					}
+				break;
+
+				case static::RULE_MIN_LENGTH:
+					if (strlen($field['value']) < $value) {
+						$this->add_error($name, "must be longer than {$value} characters.");
+						return false;
+					}
+				break;
+
+				case static::RULE_MAX_LENGTH:
+					if (strlen($field['value']) > $value) {
+						$this->add_error($field, "must be shorter than {$value} characters.");
+						return false;
+					}
+				break;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns true if the form has any errors.
+	 */
+	public function has_errors() {
+		foreach ($this->fields as $k => $v) {
+			if (!empty($v['errors'])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -160,13 +231,24 @@ class Form
 			$id = "frm" . $id++;
 			$label = $OUTPUT->escape_string(ucwords($v['label']));
 
-			$str .= '<div class="form-group">';
+			$class = 'form-group';
+			if (!empty($v['errors'])) {
+				$class .= ' has-error';
+			}
+
+			$str .= "<div class=\"{$class}\">";
 
 			switch ($v['element']) {
 				case 'input':
 					$str .= "<label for=\"{$id}\">{$label}</label>";
 					$str .= "<input name=\"{$k}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
 					break;
+			}
+
+			if (!empty($v['errors'])) {
+				foreach ($v['errors'] as $error) {
+					$str .= $label . ' ' . $error;
+				}
 			}
 
 			$str .= '</div>';

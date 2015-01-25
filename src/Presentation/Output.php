@@ -139,7 +139,13 @@ HTML5;
 	/**
 	 * Prints a generic heading.
 	 */
-	public function heading($name, $level = 1) {
+	public function heading($name = null, $level = 1) {
+		global $PAGE;
+
+		if ($name === null) {
+			$name = $PAGE->get_title();
+		}
+
 		$level = (int)$level;
 		$name = htmlentities($name);
 		echo "<h{$level}>{$name}</h{$level}>";

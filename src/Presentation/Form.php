@@ -18,6 +18,7 @@ class Form
 	const TYPE_DECIMAL = 8;
 	const TYPE_TIMESTAMP = 16;
 	const TYPE_PASSWORD = 32;
+	const TYPE_EMAIL = 64;
 
 	private $action;
 	private $fields;
@@ -79,6 +80,10 @@ class Form
 
 			case static::TYPE_PASSWORD:
 				$formtype = 'password';
+				break;
+
+			case static::TYPE_EMAIL:
+				$formtype = 'email';
 				break;
 
 			case 'hidden':

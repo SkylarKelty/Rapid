@@ -12,17 +12,23 @@ abstract class AuthPlugin
 	/**
 	 * Login page hook.
 	 * For compatibility with other Auth methods.
+	 *
+	 * @param string $redirect Where to go if we are logged in.
 	 */
-	public function login_hook($redirect) {
-		
+	public function login_page_hook($redirect) {
+		// Dont do anything special.
 	}
 
 	/**
 	 * Logout page hook.
 	 * For compatibility with other Auth methods.
 	 */
-	public function logout_hook($redirect) {
-		
+	public function logout($redirect) {
+		global $USER, $SESSION, $PAGE;
+
+		$USER->reset();
+
+    	$PAGE->redirect($redirect);
 	}
 
 	/**

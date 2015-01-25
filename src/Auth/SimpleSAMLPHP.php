@@ -22,8 +22,10 @@ class SimpleSAMLPHP extends AuthPlugin
 	/**
 	 * Login page hook.
 	 * For compatibility with other Auth methods.
+	 * 
+	 * @param string $redirect Where to go if we are logged in.
 	 */
-	public function login_hook($redirect) {
+	public function login_page_hook($redirect) {
 		global $PAGE;
 
 		if (!$this->logged_in()) {
@@ -53,18 +55,13 @@ class SimpleSAMLPHP extends AuthPlugin
 	 * Logout page hook.
 	 * For compatibility with other Auth methods.
 	 */
-	public function logout_hook($redirect) {
-		global $USER, $SESSION, $PAGE;
-
+	public function logout($redirect) {
 		if ($this->logged_in()) {
 			$this->_saml->logout();
 			return true;
 		}
 
-        $SESSION->regenerate();
-        $USER = new User();
-
-    	$PAGE->redirect($redirect);
+        parent::logout($redirect);
 	}
 
 	/**

@@ -212,18 +212,54 @@ class PDO
     }
 
     /**
+     * Safety check ORDER BY.
+     */
+    protected function get_order_by_clause($fields, $orderby) {
+        $ret = array();
+
+        $fields = explode(',', $fields);
+        $fields = array_map('trim', $fields);
+
+        $orderby = explode(',', $orderby);
+        foreach ($orderby as $field) {
+            $field = trim($field);
+            $direction = '';
+            if (strpos($field, ' ') !== false) {
+                list($field, $direction) = explode(' ', $field);
+                $direction = ' ' . $direction;
+            }
+
+            if (in_array($field, $fields)) {
+                $ret[] = $field . $direction;
+            }
+        }
+
+        return implode(', ', $ret);
+    }
+
+    /**
      * Get records from DB.
      */
-    public function get_records($table, $params = array(), $fields = '*', $limit = 0, $offset = 0) {
+    public function get_records($table, $params = array(), $fields = '*', $orderby = '', $limit = 0, $offset = 0) {
         if (is_array($fields)) {
             $fields = implode(', ', $fields);
         }
 
+        if (is_array($orderby)) {
+            $orderby = implode(', ', $orderby);
+        }
+
         $sql = "SELECT {$fields} FROM {{$table}}";
         $sql .= $this->get_where_clause($params);
+
+        if (!empty($orderby)) {
+            $sql .= " ORDER BY " . $this->get_order_by_clause($fields, $orderby);
+        }
+
         if ($limit > 0 && is_numeric($limit)) {
             $sql .= " LIMIT " . (int)$limit;
         }
+
         if ($offset > 0 && is_numeric($offset)) {
             $sql .= ' OFFSET ' . (int)$offset;
         }

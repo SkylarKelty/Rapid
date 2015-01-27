@@ -201,13 +201,16 @@ class PDO
     /**
      * Get records from DB.
      */
-    public function get_records($table, $params = array(), $fields = '*') {
+    public function get_records($table, $params = array(), $fields = '*', $limit = 0) {
         if (is_array($fields)) {
             $fields = implode(', ', $fields);
         }
 
         $sql = "SELECT {$fields} FROM {{$table}}";
         $sql .= $this->get_where_clause($params);
+        if ($limit > 0 && is_numeric($limit)) {
+            $sql .= " LIMIT " . (int)$limit;
+        }
 
         return $this->get_records_sql($sql, $params);
     }

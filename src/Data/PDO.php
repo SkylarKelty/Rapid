@@ -214,7 +214,7 @@ class PDO
     /**
      * Get records from DB.
      */
-    public function get_records($table, $params = array(), $fields = '*', $limit = 0) {
+    public function get_records($table, $params = array(), $fields = '*', $limit = 0, $offset = 0) {
         if (is_array($fields)) {
             $fields = implode(', ', $fields);
         }
@@ -223,6 +223,9 @@ class PDO
         $sql .= $this->get_where_clause($params);
         if ($limit > 0 && is_numeric($limit)) {
             $sql .= " LIMIT " . (int)$limit;
+        }
+        if ($offset > 0 && is_numeric($offset)) {
+            $sql .= ' OFFSET ' . (int)$offset;
         }
 
         return $this->get_records_sql($sql, $params);

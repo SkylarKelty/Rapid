@@ -242,7 +242,7 @@ class PDO
     /**
      * Get records from DB.
      */
-    public function get_records($table, $params = array(), $fields = '*', $orderby = '', $limit = 0, $offset = 0) {
+    protected function build_select($table, $params = array(), $fields = '*', $orderby = '', $limit = 0, $offset = 0) {
         if (is_array($fields)) {
             $fields = implode(', ', $fields);
         }
@@ -266,7 +266,25 @@ class PDO
             $sql .= ' OFFSET ' . (int)$offset;
         }
 
+        return $sql;
+    }
+
+    /**
+     * Get records from DB.
+     */
+    public function get_records($table, $params = array(), $fields = '*', $orderby = '', $limit = 0, $offset = 0) {
+        $sql = $this->build_select($table, $params, $fields, $orderby, $limit, $offset);
         return $this->get_records_sql($sql, $params);
+    }
+
+    /**
+     * Yield records from DB.
+     */
+    public function yield_records($table, $params = array(), $fields = '*', $orderby = '', $limit = 0, $offset = 0) {
+        $sql = $this->build_select($table, $params, $fields, $orderby, $limit, $offset);
+        foreach ($this->yield_records_sql($sql, $params) as $record) {
+            yield $record;
+        }
     }
 
     /**

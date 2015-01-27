@@ -206,7 +206,7 @@ class PDO
             $fields = implode(', ', $fields);
         }
 
-        $sql = "SELECT * FROM {{$table}}";
+        $sql = "SELECT {$fields} FROM {{$table}}";
         $sql .= $this->get_where_clause($params);
 
         return $this->get_records_sql($sql, $params);

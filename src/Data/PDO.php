@@ -231,6 +231,8 @@ class PDO
 
             if (in_array($field, $fields)) {
                 $ret[] = $field . $direction;
+            } else {
+                throw new \Exception("'{$field}' is not in fields array in get_records.");
             }
         }
 

@@ -26,6 +26,10 @@ class Core
 	public static function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 		global $PAGE;
 
+		if (error_reporting() === 0) {
+			return false;
+		}
+
 		$message = "Issue in {$errfile} ({$errline}): {$errstr}.";
 
 		switch ($errno) {

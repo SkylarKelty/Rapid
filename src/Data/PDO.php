@@ -162,6 +162,19 @@ class PDO
     /**
      * Get records from DB.
      */
+    public function yield_records_sql($sql, $params = array()) {
+        $stmt = $this->execute($sql, $params);
+
+        while (($obj = $stmt->fetchObject()) !== false) {
+            yield $obj;
+        }
+
+        $stmt->closeCursor();
+    }
+
+    /**
+     * Get records from DB.
+     */
     public function get_records_sql($sql, $params = array()) {
         $stmt = $this->execute($sql, $params);
 

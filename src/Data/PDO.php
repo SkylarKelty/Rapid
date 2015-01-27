@@ -195,7 +195,7 @@ class PDO
     /**
      * Get WHERE clause.
      */
-    protected function get_where_clause($params = array()) {
+    public function get_where_clause($params = array()) {
         $sql = '';
         if (!empty($params)) {
             $sql .= ' WHERE';

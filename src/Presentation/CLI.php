@@ -10,7 +10,7 @@ namespace Rapid\Presentation;
 /**
  * CLI output methods class.
  */
-class CLI
+class CLI extends Output
 {
 	/**
 	 * Simple echo.

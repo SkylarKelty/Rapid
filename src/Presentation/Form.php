@@ -19,6 +19,7 @@ class Form
 	const TYPE_TIMESTAMP = 16;
 	const TYPE_PASSWORD = 32;
 	const TYPE_EMAIL = 64;
+	const TYPE_TEXT = 128;
 
 	const RULE_REQUIRED = 1;
 	const RULE_MIN_LENGTH = 2;
@@ -68,6 +69,11 @@ class Form
 
 			case static::TYPE_STRING:
 				$formtype = 'text';
+				break;
+
+			case static::TYPE_TEXT:
+				$element = 'textarea';
+				$formtype = '';
 				break;
 
 			case static::TYPE_BOOL:
@@ -242,6 +248,10 @@ class Form
 				case 'input':
 					$str .= "<label for=\"{$id}\">{$label}</label>";
 					$str .= "<input name=\"{$k}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
+					break;
+				case 'textarea':
+					$str .= "<label for=\"{$id}\">{$label}</label>";
+					$str .= "<textarea name=\"{$k}\" class=\"form-control\" rows=\"4\">{$value}</textarea>";
 					break;
 			}
 

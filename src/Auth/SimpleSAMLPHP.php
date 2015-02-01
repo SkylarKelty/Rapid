@@ -49,6 +49,8 @@ class SimpleSAMLPHP extends AuthPlugin
         $USER->firstname = $attrs['givenName'][0];
         $USER->lastname = $attrs['sn'][0];
         $USER->email = $attrs['mail'][0];
+
+        $USER->on_login();
 	}
 
 	/**

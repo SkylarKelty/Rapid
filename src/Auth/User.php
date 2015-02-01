@@ -76,6 +76,13 @@ class User
 	}
 
 	/**
+	 * Login hook.
+	 */
+	public function on_login() {
+		// Do nothing.
+	}
+
+	/**
 	 * Are we logged in?
 	 */
 	public function loggedin() {

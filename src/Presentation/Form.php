@@ -27,6 +27,7 @@ class Form
 
 	private $action;
 	private $fields;
+	private $submit_text;
 
 	/**
 	 * Simple Constructor.
@@ -34,6 +35,14 @@ class Form
 	public function __construct($action) {
 		$this->action = $action;
 		$this->fields = array();
+		$this->submit_text = "Submit";
+	}
+
+	/**
+	 * Change the form's submit text.
+	 */
+	public function set_button_text($text) {
+		$this->submit_text = $text;
 	}
 
 	/**
@@ -264,7 +273,7 @@ class Form
 			$str .= '</div>';
 		}
 
-		$str .= '<button type="submit" class="btn btn-default">Submit</button>';
+		$str .= '<button type="submit" class="btn btn-default">' . $this->submit_text . '</button>';
 		$str .= '</form>';
 
 		return $str;

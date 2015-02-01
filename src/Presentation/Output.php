@@ -31,7 +31,7 @@ class Output
 
 		$stylesheets = $PAGE->get_stylesheets();
 
-		echo <<<HTML5
+		$out = <<<HTML5
 			<!DOCTYPE html>
 			<html lang="en">
 			  <head>
@@ -51,11 +51,13 @@ class Output
 HTML5;
 
 		$navelements = $PAGE->get_navbar();
-		$this->navigation($CFG->brand, $navelements);
+		$out .= $this->navigation($CFG->brand, $navelements);
 
-		echo <<<HTML5
+		$out .= <<<HTML5
     		<div class="container page-content" role="main">
 HTML5;
+
+		return $out;
 	}
 
 	/**
@@ -64,7 +66,7 @@ HTML5;
 	private function navigation($title, $elements, $classes = "navbar-default navbar-fixed-top") {
 		$menu = $this->navigation_menu($elements);
 
-		echo <<<HTML5
+		return <<<HTML5
 			<div class="navbar $classes" role="navigation">
 				<div class="container">
 					<div class="navbar-header">
@@ -144,7 +146,7 @@ HTML5;
 
 		$level = (int)$level;
 		$name = htmlentities($name);
-		echo "<h{$level}>{$name}</h{$level}>";
+		return "<h{$level}>{$name}</h{$level}>";
 	}
 
 	/**
@@ -202,7 +204,7 @@ HTML5;
 		$notifications = $PAGE->get_notifications();
 		$notifications = $this->render_notifications($notifications);
 
-		echo <<<HTML5
+		return <<<HTML5
 				</div>
 			    $scripts
 			    $notifications
@@ -255,7 +257,7 @@ HTML5;
 			$title = $method;
 		}
 
-		echo <<<HTML5
+		return <<<HTML5
 			<div class="panel panel-danger" role="alert">
 				<div class="panel-heading">{$title}</div>
 				<div class="panel-body">{$body}</div>

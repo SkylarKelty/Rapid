@@ -210,4 +210,28 @@ class Page
 		$this->notifications = null;
 		return $notifications;
 	}
+
+	/**
+	 * Require and return a specific request parameter.
+	 */
+	public function require_param($name) {
+		global $OUTPUT;
+
+		if (!isset($_REQUEST[$name])) {
+			$OUTPUT->error_page("Required parameter not found: '{$name}'.");
+		}
+
+		return $_REQUEST[$name];
+	}
+
+	/**
+	 * Return a specific request parameter.
+	 */
+	public function optional_param($name, $default = null) {
+		if (!isset($_REQUEST[$name])) {
+			return $default;
+		}
+
+		return $_REQUEST[$name];
+	}
 }

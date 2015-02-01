@@ -256,11 +256,11 @@ class Form
 			switch ($v['element']) {
 				case 'input':
 					$str .= $this->render_label($id, $label);
-					$str .= $this->render_input($k, $type, $value);
+					$str .= $this->render_input($id, $k, $type, $value);
 					break;
 				case 'textarea':
 					$str .= $this->render_label($id, $label);
-					$str .= $this->render_textarea($k, $value);
+					$str .= $this->render_textarea($id, $k, $value);
 					break;
 			}
 
@@ -289,14 +289,14 @@ class Form
 	/**
 	 * Render a input element.
 	 */
-	protected function render_input($elemid, $type, $value) {
-		return "<input name=\"{$elemid}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
+	protected function render_input($elemid, $name, $type, $value) {
+		return "<input id=\"{$elemid}\" name=\"{$name}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
 	}
 
 	/**
 	 * Render a textarea element.
 	 */
-	protected function render_textarea($elemid, $value) {
-		return "<textarea name=\"{$elemid}\" class=\"form-control\" rows=\"4\">{$value}</textarea>";
+	protected function render_textarea($elemid, $name, $value) {
+		return "<textarea id=\"{$elemid}\" name=\"{$name}\" class=\"form-control\" rows=\"4\">{$value}</textarea>";
 	}
 }

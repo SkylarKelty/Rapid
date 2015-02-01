@@ -61,11 +61,11 @@ HTML5;
 	/**
 	 * Prints up the navigation structure.
 	 */
-	private function navigation($title, $elements) {
+	private function navigation($title, $elements, $classes = "navbar-default navbar-fixed-top") {
 		$menu = $this->navigation_menu($elements);
 
 		echo <<<HTML5
-			<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="navbar $classes" role="navigation">
 				<div class="container">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">

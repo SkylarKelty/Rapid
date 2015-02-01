@@ -41,8 +41,15 @@ class Form
 	/**
 	 * Change the form's submit text.
 	 */
-	public function set_button_text($text) {
+	protected function set_button_text($text) {
 		$this->submit_text = $text;
+	}
+
+	/**
+	 * Get our action.
+	 */
+	protected function get_action() {
+		return $this->action;
 	}
 
 	/**

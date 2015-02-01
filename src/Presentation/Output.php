@@ -63,7 +63,7 @@ HTML5;
 	/**
 	 * Prints up the navigation structure.
 	 */
-	private function navigation($title, $elements, $classes = "navbar-default navbar-fixed-top") {
+	public function navigation($title, $elements, $classes = "navbar-default navbar-fixed-top") {
 		$menu = $this->navigation_menu($elements);
 
 		return <<<HTML5

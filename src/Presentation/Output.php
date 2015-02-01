@@ -110,15 +110,13 @@ HTML5;
 				continue;
 			}
 
-			$url = htmlentities($url);
-
 			if ($name == 'divider') {
 				$result .= '<li class="divider"></li>';
 				continue;
 			}
 
 			if ($name == 'header') {
-				$result .= '<li class="dropdown-header">' . $url . '</li>';
+				$result .= '<li class="dropdown-header">' . $this->escape_string($url) . '</li>';
 				continue;
 			}
 

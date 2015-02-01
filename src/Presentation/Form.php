@@ -255,12 +255,12 @@ class Form
 
 			switch ($v['element']) {
 				case 'input':
-					$str .= "<label for=\"{$id}\">{$label}</label>";
-					$str .= "<input name=\"{$k}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
+					$str .= $this->render_label($id, $label);
+					$str .= $this->render_input($k, $type, $value);
 					break;
 				case 'textarea':
-					$str .= "<label for=\"{$id}\">{$label}</label>";
-					$str .= "<textarea name=\"{$k}\" class=\"form-control\" rows=\"4\">{$value}</textarea>";
+					$str .= $this->render_label($id, $label);
+					$str .= $this->render_textarea($k, $value);
 					break;
 			}
 
@@ -277,5 +277,26 @@ class Form
 		$str .= '</form>';
 
 		return $str;
+	}
+
+	/**
+	 * Render a label element.
+	 */
+	protected function render_label($elemid, $label) {
+		return "<label for=\"{$elemid}\">{$label}</label>";
+	}
+
+	/**
+	 * Render a input element.
+	 */
+	protected function render_input($elemid, $type, $value) {
+		return "<input name=\"{$elemid}\" type=\"{$type}\" value=\"{$value}\" class=\"form-control\" />";
+	}
+
+	/**
+	 * Render a textarea element.
+	 */
+	protected function render_textarea($elemid, $value) {
+		return "<textarea name=\"{$elemid}\" class=\"form-control\" rows=\"4\">{$value}</textarea>";
 	}
 }

@@ -25,7 +25,7 @@ class Output
 	 * Prints a generic header.
 	 */
 	public function header() {
-		global $PAGE;
+		global $CFG, $PAGE;
 
 		$this->outputstarted = true;
 
@@ -50,7 +50,8 @@ class Output
 			  <body role="document">
 HTML5;
 
-		$this->navigation();
+		$navelements = $PAGE->get_navbar();
+		$this->navigation($CFG->brand, $navelements);
 
 		echo <<<HTML5
     		<div class="container page-content" role="main">
@@ -60,13 +61,8 @@ HTML5;
 	/**
 	 * Prints up the navigation structure.
 	 */
-	private function navigation() {
-		global $CFG, $PAGE;
-
-		$elements = $PAGE->get_navbar();
-
+	private function navigation($title, $elements) {
 		$menu = $this->navigation_menu($elements);
-		$title = $CFG->brand;
 
 		echo <<<HTML5
 			<div class="navbar navbar-default navbar-fixed-top" role="navigation">

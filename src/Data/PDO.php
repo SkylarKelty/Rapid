@@ -150,9 +150,11 @@ class PDO
         }
 
         if ($stmt->execute() === false) {
-            $error = $this->errorInfo();
+            $error = $stmt->errorInfo();
             if ($error[0] > 0) {
                 throw new \Rapid\Exception("Exception during database execute.", $error);
+            } else {
+                throw new \Rapid\Exception("Unknown error during database execute.");
             }
         }
 

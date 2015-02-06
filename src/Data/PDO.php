@@ -325,7 +325,7 @@ class PDO
             return $obj->$field;
         }, $records);
 
-        return $results;
+        return array_values($results);
     }
 
     /**

@@ -110,7 +110,7 @@ class URL
 				$parameters[] = urlencode($k) . '=' . urlencode($v);
 			}
 
-			$url = '?' . implode('&', $parameters);
+			$url .= '?' . implode('&', $parameters);
 		}
 
 		return $url;

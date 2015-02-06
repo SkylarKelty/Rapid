@@ -316,8 +316,8 @@ class PDO
     /**
      * Returns an array containing values of $field
      */
-    public function get_fieldset($table, $field, $params = array()) {
-        $records = $this->get_records($table, $params, $field);
+    public function get_fieldset($table, $field, $params = array(), $orderby = '', $limit = 0, $offset = 0) {
+        $records = $this->get_records($table, $params, $field, $orderby, $limit, $offset);
 
         $results = array_map(function($obj) use($field) {
             return $obj->$field;

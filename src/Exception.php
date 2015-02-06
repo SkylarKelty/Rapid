@@ -58,8 +58,11 @@ class Exception extends \Exception
 		$line = $entry['line'];
 
 		$function = $entry['function'];
-		$args = join(', ', $entry['args']);
-		$function = "{$function}({$args});";
+        $argstr = $entry['args'];
+        if (is_array($argstr)) {
+            $argstr = join(', ', $argstr);
+        }
+		$function = "{$function}({$argstr});";
 
 		if (isset($entry['class'])) {
 			$class = $entry['class'];

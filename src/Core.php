@@ -46,7 +46,7 @@ class Core
 		}
 
 		// Developer mode?
-		if (isset($CFG->developer_mode) && $CFG->developer_mode) {
+		if (!isset($CFG->developer_mode) || !$CFG->developer_mode) {
 			static::init_error_handlers();
 		}
 

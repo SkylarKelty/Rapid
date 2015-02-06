@@ -51,8 +51,13 @@ class Core
 		}
 
 		// Init everything else.
-		static::init_db();
-		static::init_cache();
+        if (!empty($CFG->database)) {
+    		static::init_db();
+        }
+
+        if (!empty($CFG->cache)) {
+            static::init_cache();
+        }
 	}
 
 	/**
